@@ -1,5 +1,6 @@
 import gensim.downloader as api
 from gensim.models import KeyedVectors
+import typing as t
 import os
 import gzip
 import shutil
@@ -9,8 +10,19 @@ import numpy as np
 import env
 import json
 
-def launch(settings, embeddings):
-    gz_path = api.load(embeddings[settings["language"]], return_path=True)
+model:KeyedVectors = None
+vocab:t.List[str] = []
+mesg:dict = dict()
+sets: dict = dict()
+
+def launch() -> None:
+    """Load embeddings if needed unpack them and do other important stuff."""
+    global model, vocab, mesg, sets
+    with open(env.SETTINGS_PATH, 'r') as f:
+        sets, embs = json.load(f)
+
+
+    gz_path = api.load(embs[sets["language"]], return_path=True)
 
     txt_path = os.path.splitext(gz_path)[0] + ".txt"
     if not os.path.exists(txt_path):
@@ -19,10 +31,10 @@ def launch(settings, embeddings):
             with open(txt_path, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
 
-    with open(settings['data path'] + settings['language'] + settings['vocab postfix'], 'r') as voc:
+    with open(sets['data path'] + sets['language'] + sets['vocab postfix'], 'r') as voc:
         vocab = set(voc.read().split('\n'))
 
-    result_file = settings["data path"] +  embeddings[settings["language"]] + ".bin"
+    result_file = sets["data path"] +  embs[sets["language"]] + ".bin"
     if not os.path.exists(result_file):
         print("Transforming one substance to another, may take a while...")
         model = KeyedVectors.load_word2vec_format(txt_path, binary=False)
@@ -35,32 +47,51 @@ def launch(settings, embeddings):
 
     vocab = [word for word in vocab if word in model.key_to_index]
 
-    with open(settings['data path'] + settings['language'] + '_mesg.json', 'r') as f:
+    with open(sets['data path'] + sets['language'] + '_mesg.json', 'r') as f:
         mesg = json.load(f)
-    return model, vocab, mesg
+
+def split_positive_negative(expression: str) -> t.Tuple[t.List[str], t.List[str], t.List[str], t.List[str]]:
+    """Split expression on four lists: positive, negative, not-presented pos/neg.
+    :param expression: Expression containing letters and +/-
+    :returns: a tuple of four lists of strings
+    example usage:
+    >>> split_positive_negative("aboba - cat + dog - ksljdfv")
+    (['dog'], ['cat'], ['aboba'], ['ksljdfv'])"""
+
+    splitted = expression.replace(' ', '').replace('\t', '').replace('\n', '').replace('-', '+-').split('+')
+    pos, neg, unk_pos, unk_neg = [], [], [], []
+    for word in splitted:
+        ref, unk_ref = pos, unk_pos
+        if word[0] == '-':
+            word = word[1:]
+            ref, unk_ref = neg, unk_neg
+        if word not in model.key_to_index:
+            unk_ref.append(word)
+        else:
+            ref.append(word)
+    return pos, neg, unk_pos, unk_neg
+
+def compute_expression(positive_words, negative_words) -> str:
+    return model.most_similar(positive=positive_words, negative=negative_words, topn=1)[0][0]
 
 if __name__ == "__main__":
-    with open(env.SETTINGS_PATH, 'r') as f:
-        settings, embeddings = json.load(f)
-    model, vocab, mesg = launch(settings, embeddings)
+    launch()
     mode = input(mesg['mode']['choose'] + "\n=>")
     while True:
         if mode == mesg['mode']['playground']:
             expression = input("Type expression\n=>")
-            expression = expression.replace(' ', '').replace('\t', '').replace('\n', '').replace('-', '+-').split('+')
-            positive = []
-            negative = []
-            for word in expression:
-                l = positive
-                if word[0] == '-':
-                    word = word[1:]
-                    l = negative
-                if word not in model.key_to_index:
-                    print("Sorry, I have not ever seen word: ", word, ". I skip it.")
-                    continue
-                l.append(word) 
-            print(model.most_similar(positive=positive, negative=negative, topn=1)[0][0])
-        if mode == mesg['mode']['victorine']:
+            pos, neg, unk_pos, unk_neg = split_positive_negative(expression)
+            if len(unk_pos) + len(unk_neg) != 0:
+                print("Following words are unknown for us (we skipped them): ", end='')
+            for w in unk_pos + unk_neg:
+                print(w, end=' ')
+            else:
+                print()
+            if len(pos) + len(neg) == 0:
+                print("There is no words to compute expression, let's go next!")
+            else:
+                print(compute_expression(pos, neg))
+        elif mode == mesg['mode']['victorine']:
             score = 0
             print("Choose number of words:\n1 - hah - just a warm up :)\n2 - easy")
             print("3 - already hard\n4.. - monster level XD")
@@ -85,5 +116,8 @@ if __name__ == "__main__":
                     print("You are absolutely right! +1! Score: ", score)
                 else:
                     print("Ooops... Correct words is", target)
+        else:
+            print("brr unknown mode")
+            break
 
                                
