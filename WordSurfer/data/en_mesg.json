@@ -1,0 +1,8 @@
+{
+    "choose lang": "Choose interface's language, please",
+    "mode": {
+        "choose" : "Choose mode: playground (`p`) or victorine (`v`)",
+        "playground": "p",
+        "victorine": "v"
+    }
+}

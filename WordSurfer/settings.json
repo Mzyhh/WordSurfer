@@ -1,0 +1,10 @@
+[
+    {
+     "language": "en",
+     "vocab postfix": "_vocab.txt",
+     "data path": "./data/"
+    },
+    {
+     "en": "glove-twitter-100"
+    }
+]
