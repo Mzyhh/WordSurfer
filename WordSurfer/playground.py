@@ -5,32 +5,47 @@ from textual.compose import compose
 from textual.screen import Screen
 
 import logic
+import env
+
+def add_to_interesting(expr: str, res: str) -> None:
+    with open(env.PATH_TO_INTERESTING, 'a') as f:
+        f.write(expr + ' = ' + res + '\n')
 
 class PlaygroundScreen(Screen):
 
+    CSS_PATH = "./playground.css"
+
+    BINDINGS = [('q', 'quit', 'Go to main menu')]
+
     def compose(self) -> ComposeResult:
-        yield Header(name="Playground")
+        yield Header()
         yield Footer()
-        with Vertical(id="main-container"):
-            yield Button("← Main menu", id="exit-btn", variant="error")
-            
-            yield Static("Enter expression:", classes="instruction")
-            
-            with Container(id="input-container"):
-                yield Input(placeholder="Expression...", id="expression-input")
-            
-            yield Static("Result", id="result")
-            
-            with Horizontal(id="feedback-buttons"):
-                yield Button("🤩 Interesting", id="interesting", variant="success")
-                yield Button("😴 Boring", id="boring", variant="warning")
+        #yield Button("← Main menu", id="exit-btn", variant="error")
+        yield Container(
+            Container (
+                Input(placeholder="Enter expression...", id="expression-input"),
+                Static("Result", id="result"),
+                classes="sandbox",
+                id="io-box"
+            ),
+            Container (
+                Button("🤩 Interesting", id="interesting", variant="success"),
+                Button("😴 Boring", id="boring", variant="warning"),
+                classes="feedback-buttons",
+                id="feedback"
+            ),
+            id="interactive-part")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "exit-btn":
-            self.app.pop_screen()
-        elif event.button.id in ("interesting", "boring"):
+        if event.button.id == "interesting":
+            self.notify(self.query_one('#expression-input').value, timeout=2)
+            add_to_interesting(self.query_one('#expression-input').value, str(self.query_one("#result").renderable))
+        elif event.button.id == "boring":
             self.query_one("#expression-input").value = ""
-            self.notify("Thank you for feedback!", timeout=2)
+            
+
+    def action_quit(self) -> None:
+        self.app.pop_screen()
 
     def on_input_submitted(self, event: Input.Submitted) -> None:
         """Handle input expression."""

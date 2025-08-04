@@ -1,0 +1,37 @@
+Button {
+    margin: 0 2; 
+}
+
+.feedback-buttons {
+    align: center bottom;
+}
+
+#exit-btn {
+    width: 10%;
+    height: auto;
+    opacity: 80%;
+}
+
+#interactive-part {
+    height: 100%;
+    margin: 0 8;
+}
+
+#result {
+    text-align: center;
+    margin: 1 6;
+}
+
+#io-box {
+    content-align: center middle;
+    padding: 4 0;
+    layout: vertical;
+}
+
+#feedback {
+    padding: 1 5;
+    layout: horizontal;
+    height: auto;
+    
+}
+
