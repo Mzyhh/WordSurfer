@@ -4,8 +4,9 @@ from textual.app import ComposeResult
 from textual.compose import compose
 from textual.screen import Screen
 
-import logic
-import env
+import WordSurfer.logic as logic
+import WordSurfer.env as env
+
 
 def add_to_interesting(expr: str, res: str) -> None:
     with open(env.PATH_TO_INTERESTING, 'a') as f:
@@ -13,14 +14,13 @@ def add_to_interesting(expr: str, res: str) -> None:
 
 class PlaygroundScreen(Screen):
 
-    CSS_PATH = "./playground.css"
+#    CSS_PATH = env.CSS_PATH + "./playground.css"
 
     BINDINGS = [('q', 'quit', 'Go to main menu')]
 
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
-        #yield Button("← Main menu", id="exit-btn", variant="error")
         yield Container(
             Container (
                 Input(placeholder="Enter expression...", id="expression-input"),

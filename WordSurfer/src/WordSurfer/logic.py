@@ -7,7 +7,7 @@ import shutil
 from random import sample
 import numpy as np
 
-import env
+import WordSurfer.env as env
 import json
 
 model:KeyedVectors = None

@@ -1,4 +1,31 @@
+
+Header {
+    dock: top;
+    height: 1;
+    content-align: center middle;
+}
+
+Screen {
+    align: center middle;
+    height: auto;
+}
+
+.buttons {
+    width: 100%;
+    height: auto;
+    padding: 1;
+    opacity: 90%;
+    
+}
+
+#exit {
+    color: red;
+    border: tall red;
+}
+
+
 Button {
+    width: 0.3fr;
     margin: 0 2; 
 }
 

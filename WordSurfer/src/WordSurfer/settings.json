@@ -2,7 +2,7 @@
     {
      "language": "en",
      "vocab postfix": "_vocab.txt",
-     "data path": "./data/"
+     "data path": "/home/mzyhh/projects/nlp4kids/WordSurfer/src/WordSurfer/data/"
     },
     {
      "en": "glove-twitter-100"

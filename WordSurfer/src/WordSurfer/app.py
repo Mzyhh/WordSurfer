@@ -2,13 +2,15 @@ from textual.app import App, ComposeResult
 from textual.widgets import Footer, Header, Button, Input, Static
 from textual.containers import Container, CenterMiddle, Horizontal, Vertical
 
-from playground import PlaygroundScreen
-import logic
+from WordSurfer.screens.playground import PlaygroundScreen
+import WordSurfer.logic as logic
+import WordSurfer.env as env
+from WordSurfer.utils.get_recources import get_resource_file
 
 
 class WordSurfer(App):
     """Main menu with multiple choices."""
-    CSS_PATH = 'main_menu.css'
+    CSS_PATH = str(get_resource_file("style.css"))
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
