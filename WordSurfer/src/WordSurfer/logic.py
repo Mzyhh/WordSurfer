@@ -6,23 +6,24 @@ import gzip
 import shutil
 from random import sample
 import numpy as np
+from configparser import ConfigParser
+import json
 
 import WordSurfer.env as env
-import json
+from WordSurfer.utils.get_resources import get_resource_file
 
 model:KeyedVectors = None
 vocab:t.List[str] = []
 mesg:dict = dict()
-sets: dict = dict()
+config: ConfigParser = ConfigParser() 
 
 def launch() -> None:
     """Load embeddings if needed unpack them and do other important stuff."""
     global model, vocab, mesg, sets
-    with open(env.SETTINGS_PATH, 'r') as f:
-        sets, embs = json.load(f)
+    config.read(str(get_resource_file('config.ini')))
 
 
-    gz_path = api.load(embs[sets["language"]], return_path=True)
+    gz_path = api.load(str(config['General']['embeddings']), return_path=True)
 
     txt_path = os.path.splitext(gz_path)[0] + ".txt"
     if not os.path.exists(txt_path):
@@ -30,11 +31,12 @@ def launch() -> None:
         with gzip.open(gz_path, 'rb') as f_in:
             with open(txt_path, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
-
-    with open(sets['data path'] + sets['language'] + sets['vocab postfix'], 'r') as voc:
+    
+    data_path = str(get_resource_file("data/"))  + '/'
+    with open(data_path + str(config['General']['language']) + '_vocab.txt', 'r') as voc:
         vocab = set(voc.read().split('\n'))
 
-    result_file = sets["data path"] +  embs[sets["language"]] + ".bin"
+    result_file = data_path +  str(config['General']['embeddings']) + ".bin"
     if not os.path.exists(result_file):
         print("Transforming one substance to another, may take a while...")
         model = KeyedVectors.load_word2vec_format(txt_path, binary=False)
@@ -47,7 +49,7 @@ def launch() -> None:
 
     vocab = [word for word in vocab if word in model.key_to_index]
 
-    with open(sets['data path'] + sets['language'] + '_mesg.json', 'r') as f:
+    with open(data_path + str(config['General']['language']) + '_mesg.json', 'r') as f:
         mesg = json.load(f)
 
 def split_positive_negative(expression: str) -> t.Tuple[t.List[str], t.List[str], t.List[str], t.List[str]]:

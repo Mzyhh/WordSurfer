@@ -33,11 +33,6 @@ Button {
     align: center bottom;
 }
 
-#exit-btn {
-    width: 10%;
-    height: auto;
-    opacity: 80%;
-}
 
 #interactive-part {
     height: 100%;

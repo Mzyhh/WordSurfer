@@ -4,8 +4,7 @@ from textual.containers import Container, CenterMiddle, Horizontal, Vertical
 
 from WordSurfer.screens.playground import PlaygroundScreen
 import WordSurfer.logic as logic
-import WordSurfer.env as env
-from WordSurfer.utils.get_recources import get_resource_file
+from WordSurfer.utils.get_resources import get_resource_file
 
 
 class WordSurfer(App):

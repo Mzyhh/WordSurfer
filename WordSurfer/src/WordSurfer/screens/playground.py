@@ -5,11 +5,12 @@ from textual.compose import compose
 from textual.screen import Screen
 
 import WordSurfer.logic as logic
-import WordSurfer.env as env
+from WordSurfer.utils.get_resources import get_resource_file
 
 
 def add_to_interesting(expr: str, res: str) -> None:
-    with open(env.PATH_TO_INTERESTING, 'a') as f:
+    data_path = str(get_resource_file('data')) + '/'
+    with open(data_path + 'interesting_expressions.txt', 'a') as f:
         f.write(expr + ' = ' + res + '\n')
 
 class PlaygroundScreen(Screen):
