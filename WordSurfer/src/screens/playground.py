@@ -4,8 +4,8 @@ from textual.app import ComposeResult
 from textual.compose import compose
 from textual.screen import Screen
 
-import WordSurfer.logic as logic
-from WordSurfer.utils.get_resources import get_resource_file
+import logic
+from utils.get_resources import get_resource_file
 
 
 def add_to_interesting(expr: str, res: str) -> None:

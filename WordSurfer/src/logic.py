@@ -9,8 +9,7 @@ import numpy as np
 from configparser import ConfigParser
 import json
 
-import WordSurfer.env as env
-from WordSurfer.utils.get_resources import get_resource_file
+from utils.get_resources import get_resource_file
 
 model:KeyedVectors = None
 vocab:t.List[str] = []

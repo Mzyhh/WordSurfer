@@ -3,5 +3,5 @@ from pathlib import Path
 
 
 def get_resource_file(filename: str) -> Path:
-    with as_file(files("WordSurfer.resources").joinpath(filename)) as resource_file:
+    with as_file(files("resources").joinpath(filename)) as resource_file:
         return resource_file

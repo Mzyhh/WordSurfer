@@ -2,9 +2,9 @@ from textual.app import App, ComposeResult
 from textual.widgets import Footer, Header, Button, Input, Static
 from textual.containers import Container, CenterMiddle, Horizontal, Vertical
 
-from WordSurfer.screens.playground import PlaygroundScreen
-import WordSurfer.logic as logic
-from WordSurfer.utils.get_resources import get_resource_file
+from screens.playground import PlaygroundScreen
+import logic as logic
+from utils.get_resources import get_resource_file
 
 
 class WordSurfer(App):
@@ -37,6 +37,8 @@ class WordSurfer(App):
                 self.notify("Start Quiz!")
             elif event.button.id == "achievements":
                 self.notify(" Open Achievements...")
+            elif event.button.id == "exit":
+                self.exit()
 
 
 if __name__ == "__main__":
