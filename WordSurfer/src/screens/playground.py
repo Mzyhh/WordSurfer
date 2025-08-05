@@ -3,9 +3,10 @@ from textual.widgets import Button, Header, Footer, Static, Input
 from textual.app import ComposeResult
 from textual.compose import compose
 from textual.screen import Screen
+import typing as t
 
-import logic
 from utils.get_resources import get_resource_file
+from config import Config
 
 
 def add_to_interesting(expr: str, res: str) -> None:
@@ -15,9 +16,11 @@ def add_to_interesting(expr: str, res: str) -> None:
 
 class PlaygroundScreen(Screen):
 
-#    CSS_PATH = env.CSS_PATH + "./playground.css"
-
     BINDINGS = [('q', 'quit', 'Go to main menu')]
+
+    def __init__(self, config: Config):
+        super().__init__()
+        self.config = config
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -53,7 +56,31 @@ class PlaygroundScreen(Screen):
         expression = event.value
         if expression:
             result = 'Sorry but we can\'t compute this expression'
-            pos, neg, unk_pos, unk_neg = logic.split_positive_negative(expression)
+            pos, neg, unk_pos, unk_neg = self.split_positive_negative(expression)
             if len(pos) + len(neg) > 0:
-                result = logic.compute_expression(pos, neg)
+                result = self.compute_expression(pos, neg)
             self.query_one("#result").update(result)
+
+    def split_positive_negative(self, expression: str) -> t.Tuple[t.List[str], t.List[str], t.List[str], t.List[str]]:
+        """Split expression on four lists: positive, negative, not-presented pos/neg.
+        :param expression: Expression containing letters and +/-
+        :returns: a tuple of four lists of strings
+        example usage:
+        >>> split_positive_negative("aboba - cat + dog - ksljdfv")
+        (['dog'], ['cat'], ['aboba'], ['ksljdfv'])"""
+
+        splitted = expression.replace(' ', '').replace('\t', '').replace('\n', '').replace('-', '+-').split('+')
+        pos, neg, unk_pos, unk_neg = [], [], [], []
+        for word in splitted:
+            ref, unk_ref = pos, unk_pos
+            if word[0] == '-':
+                word = word[1:]
+            ref, unk_ref = neg, unk_neg
+            if word not in self.config.model.key_to_index:
+                unk_ref.append(word)
+            else:
+                ref.append(word)
+        return pos, neg, unk_pos, unk_neg
+
+    def compute_expression(self, positive_words, negative_words) -> str:
+        return self.config.model.most_similar(positive=positive_words, negative=negative_words, topn=1)[0][0]

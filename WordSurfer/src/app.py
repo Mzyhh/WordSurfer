@@ -1,15 +1,19 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Header, Button, Input, Static
-from textual.containers import Container, CenterMiddle, Horizontal, Vertical
+from textual.widgets import Footer, Header, Button
+from textual.containers import CenterMiddle
 
 from screens.playground import PlaygroundScreen
-import logic as logic
 from utils.get_resources import get_resource_file
+from config import launch, Config
 
 
 class WordSurfer(App):
     """Main menu with multiple choices."""
     CSS_PATH = str(get_resource_file("style.css"))
+
+    def __init__(self, config: Config):
+        super().__init__()
+        self.config = config
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
@@ -32,7 +36,7 @@ class WordSurfer(App):
     def on_button_pressed(self, event: Button.Pressed) -> None:
             """Handle button press."""
             if event.button.id == "playground":
-                self.push_screen(PlaygroundScreen())
+                self.push_screen(PlaygroundScreen(config))
             elif event.button.id == "quiz":
                 self.notify("Start Quiz!")
             elif event.button.id == "achievements":
@@ -42,6 +46,6 @@ class WordSurfer(App):
 
 
 if __name__ == "__main__":
-    logic.launch()
-    app = WordSurfer()
+    config = launch()
+    app = WordSurfer(config)
     app.run()
