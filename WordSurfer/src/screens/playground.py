@@ -9,7 +9,6 @@ from utils.get_resources import get_resource_file
 from config import Config
 
 
-
 class PlaygroundScreen(Screen):
 
     BINDINGS = [('q', 'quit', 'Go to main menu')]
@@ -71,7 +70,7 @@ class PlaygroundScreen(Screen):
             ref, unk_ref = pos, unk_pos
             if word[0] == '-':
                 word = word[1:]
-            ref, unk_ref = neg, unk_neg
+                ref, unk_ref = neg, unk_neg
             if word not in self.config.model.key_to_index:
                 unk_ref.append(word)
             else:
