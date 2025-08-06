@@ -39,7 +39,7 @@ class QuizScreen(Screen):
                     '4 - Wow..',
                     id="num_of_words"
                 ),
-                Static('Score:\n' + str(self.user_score), id='user-score'),
+                Static('Score: ' + str(self.user_score), id='user-score'),
                 id="quiz-options"
             ),
             Container(
@@ -61,11 +61,8 @@ class QuizScreen(Screen):
         elif not self.is_answered and option_selected.option_list.id == 'opt-words':
             user_ans = self.cur_opt_words[option_selected.option_index]
             if user_ans == self.cur_target:
-                self.notify('Great. +1', timeout=1)     
                 self.user_score += 1
-                self.query_one('#user-score').update('Score:\n' + str(self.user_score))
-            else:
-                self.notify('Wasted..', timeout=1)
+                self.query_one('#user-score').update('Score: ' + str(self.user_score))
             self.query_one('#next-question').disabled = False
             self.is_answered = True
 

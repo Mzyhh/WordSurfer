@@ -1,6 +1,6 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Footer, Header, Button
-from textual.containers import CenterMiddle
+from textual.containers import Container
 
 from screens.playground import PlaygroundScreen
 from screens.quiz import QuizScreen
@@ -20,10 +20,10 @@ class WordSurfer(App):
         """Create child widgets for the app."""
         yield Header()
         yield Footer()
-        yield CenterMiddle(
+        yield Container(
             Button("Playground", id="playground"),
             Button("Quiz", id="quiz"),
-            Button("Achievements", id="achievements"),
+            #Button("Achievements", id="achievements"),
             Button("exit", id="exit"),
             classes="buttons",
             id="main"
