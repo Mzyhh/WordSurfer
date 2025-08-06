@@ -18,30 +18,23 @@ class WordSurfer(App):
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
+        print(type(config))
         yield Header()
         yield Footer()
         yield Container(
-            Button("Playground", id="playground"),
-            Button("Quiz", id="quiz"),
-            #Button("Achievements", id="achievements"),
-            Button("exit", id="exit"),
+            Button(self.config.messages['playground button'], id="playground"),
+            Button(self.config.messages['quiz button'], id="quiz"),
+            Button(self.config.messages['exit button'], id="exit"),
             classes="buttons",
             id="main"
         )
 
-    def action_toggle_dark(self) -> None:
-        """An action to toggle dark mode."""
-        self.theme = (
-            "textual-dark" if self.theme == "textual-light" else "textual-light"
-        )
     def on_button_pressed(self, event: Button.Pressed) -> None:
             """Handle button press."""
             if event.button.id == "playground":
-                self.push_screen(PlaygroundScreen(config))
+                self.push_screen(PlaygroundScreen(self.config))
             elif event.button.id == "quiz":
-                self.push_screen(QuizScreen(config))
-            elif event.button.id == "achievements":
-                self.notify(" Open Achievements...")
+                self.push_screen(QuizScreen(self.config))
             elif event.button.id == "exit":
                 self.exit()
 

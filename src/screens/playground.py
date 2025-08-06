@@ -1,16 +1,16 @@
 from textual.containers import CenterMiddle, Container, Vertical, Horizontal
 from textual.widgets import Button, Header, Footer, Static, Input
 from textual.app import ComposeResult
-from textual.compose import compose
 from textual.screen import Screen
 import typing as t
+from textual.binding import Binding
 
 from utils.get_resources import get_resource_file
 from config import Config
 
 
 class PlaygroundScreen(Screen):
-
+    
     BINDINGS = [('q', 'quit', 'Go to main menu')]
 
     def __init__(self, config: Config):
@@ -22,14 +22,17 @@ class PlaygroundScreen(Screen):
         yield Footer()
         yield Container(
             Container (
-                Input(placeholder="Enter expression...", id="expression-input"),
-                Static("Result", id="result"),
+                Input(placeholder=self.config.messages['input placeholder'],
+                      id="expression-input"),
+                Static(self.config.messages['result placeholder'], id="result"),
                 classes="sandbox",
                 id="io-box"
             ),
             Container (
-                Button("🤩 Interesting", id="interesting", variant="success"),
-                Button("😴 Boring", id="boring", variant="warning"),
+                Button(self.config.messages['interesting button'], 
+                       id="interesting", variant="success"),
+                Button(self.config.messages['boring button'],
+                       id="boring", variant="warning"),
                 classes="feedback-buttons",
                 id="feedback"
             ),
@@ -50,7 +53,7 @@ class PlaygroundScreen(Screen):
         """Handle input expression."""
         expression = event.value
         if expression:
-            result = 'Sorry but we can\'t compute this expression'
+            result = self.config.messages['fatal error in expression']
             pos, neg, unk_pos, unk_neg = self.split_positive_negative(expression)
             if len(pos) + len(neg) > 0:
                 result = self.compute_expression(pos, neg)

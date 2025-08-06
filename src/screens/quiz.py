@@ -31,21 +31,20 @@ class QuizScreen(Screen):
         yield Footer()
         yield Container(
             Container(
-                Label('Number of words:'),
+                Label(self.config.messages['number of words']),
                 OptionList(
-                    '1 - Kidding?',
-                    '2 - OK.',
-                    '3 - Let\'s go',
-                    '4 - Wow..',
+                    *self.config.messages['number of words list'].split('\n'),
                     id="num_of_words"
                 ),
-                Static('Score: ' + str(self.user_score), id='user-score'),
+                Static(self.config.messages['score'] + str(self.user_score),
+                       id='user-score'),
                 id="quiz-options"
             ),
             Container(
                 Static(self.cur_expr, id="quiz-out"),
                 OptionList(*self.cur_opt_words, id='opt-words'),
-                Button('continue', disabled=True, id='next-question'),
+                Button(self.config.messages['continue button'], disabled=True,
+                       id='next-question'),
                 id="quiz-main"
             ),
             id="quiz-body"

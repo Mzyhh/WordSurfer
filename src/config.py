@@ -15,7 +15,7 @@ class Config:
     language: str
     model: KeyedVectors
     vocabulary: t.List[str]
-    messages: dict
+    messages: t.Dict
 
     int_filepath: str
 
@@ -55,12 +55,12 @@ def launch() -> Config:
 
     with open(data_path + str(config['General']['language']) + '_mesg.json', 'r') as f:
         mesg = json.load(f)
-
+    
     return Config(
         language=config['General']['language'],
         model=model,
-        vocabulary=vocab,
         messages=mesg,
+        vocabulary=vocab,
         int_filepath=config['Playground']['int_file'],
         n_options=int(config['Quiz']['n_options'])
     )
