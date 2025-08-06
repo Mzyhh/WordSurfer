@@ -57,3 +57,25 @@ Button {
     
 }
 
+
+/* Quiz */
+
+#quiz-body {
+    layout: horizontal;
+}
+
+#quiz-options {
+    width: 20%;
+    height: auto;
+    margin: 0 1 0 0;
+}
+
+#quiz-main {
+}
+
+#quiz-out {
+    border: white;
+    text-align: center;
+    margin: 1 1;
+}
+

@@ -3,6 +3,7 @@ from textual.widgets import Footer, Header, Button
 from textual.containers import CenterMiddle
 
 from screens.playground import PlaygroundScreen
+from screens.quiz import QuizScreen
 from utils.get_resources import get_resource_file
 from config import launch, Config
 
@@ -38,7 +39,7 @@ class WordSurfer(App):
             if event.button.id == "playground":
                 self.push_screen(PlaygroundScreen(config))
             elif event.button.id == "quiz":
-                self.notify("Start Quiz!")
+                self.push_screen(QuizScreen(config))
             elif event.button.id == "achievements":
                 self.notify(" Open Achievements...")
             elif event.button.id == "exit":

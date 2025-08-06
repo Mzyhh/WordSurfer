@@ -17,6 +17,10 @@ class Config:
     vocabulary: t.List[str]
     messages: dict
 
+    int_filepath: str
+
+    n_options: int
+
 
 def launch() -> Config:
     """Load embeddings if needed unpack them and do other important stuff."""
@@ -56,5 +60,7 @@ def launch() -> Config:
         language=config['General']['language'],
         model=model,
         vocabulary=vocab,
-        messages=mesg
+        messages=mesg,
+        int_filepath=config['Playground']['int_file'],
+        n_options=int(config['Quiz']['n_options'])
     )

@@ -9,10 +9,6 @@ from utils.get_resources import get_resource_file
 from config import Config
 
 
-def add_to_interesting(expr: str, res: str) -> None:
-    data_path = str(get_resource_file('data')) + '/'
-    with open(data_path + 'interesting_expressions.txt', 'a') as f:
-        f.write(expr + ' = ' + res + '\n')
 
 class PlaygroundScreen(Screen):
 
@@ -43,7 +39,7 @@ class PlaygroundScreen(Screen):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "interesting":
             self.notify(self.query_one('#expression-input').value, timeout=2)
-            add_to_interesting(self.query_one('#expression-input').value, str(self.query_one("#result").renderable))
+            self.add_to_interesting(self.query_one('#expression-input').value, str(self.query_one("#result").renderable))
         elif event.button.id == "boring":
             self.query_one("#expression-input").value = ""
             
@@ -84,3 +80,8 @@ class PlaygroundScreen(Screen):
 
     def compute_expression(self, positive_words, negative_words) -> str:
         return self.config.model.most_similar(positive=positive_words, negative=negative_words, topn=1)[0][0]
+
+    def add_to_interesting(self, expr: str, res: str) -> None:
+        data_path = str(get_resource_file('data')) + '/'
+        with open(data_path + self.config.int_filepath, 'a') as f:
+            f.write(expr + ' = ' + res + '\n')
