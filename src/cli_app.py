@@ -1,6 +1,3 @@
-from random import sample
-import numpy as np
-
 from app import WordSurfer
 from config import launch
 from screens.playground import PlaygroundScreen
@@ -53,4 +50,3 @@ if __name__ == "__main__":
             print("brr unknown mode")
             break
 
-                               

@@ -1,9 +1,8 @@
-from textual.containers import CenterMiddle, Container, Vertical, Horizontal
+from textual.containers import Container
 from textual.widgets import Button, Header, Footer, Static, Input
 from textual.app import ComposeResult
 from textual.screen import Screen
 import typing as t
-from textual.binding import Binding
 
 from utils.get_resources import get_resource_file
 from config import Config
@@ -11,8 +10,9 @@ from config import Config
 
 class PlaygroundScreen(Screen):
     
-    BINDINGS = [('q', 'quit', 'Go to main menu')]
-
+    BINDINGS = [('q', 'quit', 'Go to main menu'), 
+                ('ctrl+u', 'clear_input', 'Clear Input')]
+    
     def __init__(self, config: Config):
         super().__init__()
         self.config = config
@@ -40,10 +40,12 @@ class PlaygroundScreen(Screen):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "interesting":
-            self.notify(self.query_one('#expression-input').value, timeout=2)
-            self.add_to_interesting(self.query_one('#expression-input').value, str(self.query_one("#result").renderable))
+            input_val = self.query_one('#expression-input', Input).value
+            self.notify(input_val, timeout=2)
+            self.add_to_interesting(input_val, 
+                        str(self.query_one("#result", Static).renderable))
         elif event.button.id == "boring":
-            self.query_one("#expression-input").value = ""
+            self.query_one("#expression-input", Input).value = ""
             
 
     def action_quit(self) -> None:
@@ -57,8 +59,16 @@ class PlaygroundScreen(Screen):
             pos, neg, unk_pos, unk_neg = self.split_positive_negative(expression)
             if len(pos) + len(neg) > 0:
                 result = self.compute_expression(pos, neg)
-            self.query_one("#result").update(result)
+            self.query_one("#result", Static).update(result)
+            if len(unk_pos) + len(unk_neg) > 0:
+                self.notify(self.config.messages['unknown words'] + ': ' +
+                    ' '.join(unk_pos + unk_neg))
 
+    def action_clear_input(self):
+        input_widget = self.query_one("#expression-input", Input)
+        input_widget.value = ""
+        input_widget.focus()
+        
     def split_positive_negative(self, expression: str) -> t.Tuple[t.List[str], t.List[str], t.List[str], t.List[str]]:
         """Split expression on four lists: positive, negative, not-presented pos/neg.
         :param expression: Expression containing letters and +/-
