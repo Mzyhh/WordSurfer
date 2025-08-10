@@ -1,0 +1,1 @@
+Russian vocabular: https://github.com/kkrypt0nn/wordlists/tree/main/wordlists/languages/russian.txt
