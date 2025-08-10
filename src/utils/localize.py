@@ -13,14 +13,22 @@ DEFAULT_LANG:str = 'en'
 
 
 def translate(model: MarianMTModel, tokenizer: MarianTokenizer, text: str) -> str:
+    print('translate')
+    to_skip = '!?.\n'
     sentences = re.split(r'([?!.\n])', text)
-    sentences = [s.strip() for s in sentences if s.strip()]
-    tokenized_text = tokenizer([text], return_tensors='pt')
-    translation = model.generate(**tokenized_text)
-    translated_text = tokenizer.decode(translation[0], skip_special_tokens=True)
-    return translated_text
+    translations = []
+    for s in sentences:
+        if s in to_skip:
+            translations.append(s)
+        else:
+            tokens = tokenizer([s], return_tensors='pt')
+            translated = model.generate(**tokens)
+            decoded = tokenizer.decode(translated[0], skip_special_tokens=True)
+            translations.append(decoded)
+    return ''.join(translations)
 
 def auto_localize(lang: str, messages: dict) -> dict:
+    print('localize')
     model_name = 'Helsinki-NLP/opus-mt-en-' + lang
     tokenizer = MarianTokenizer.from_pretrained(model_name)
     model = MarianMTModel.from_pretrained(model_name)
@@ -38,6 +46,7 @@ def auto_localize(lang: str, messages: dict) -> dict:
     return res
 
 def load_language(lang: str, write_file:bool=True) -> dict:
+    print('load language')
     data_path = str(get_resource_file("data/"))  + '/'
     o_path, g_path = map(lambda x: data_path + lang + x, 
                          [ORIGINAL_MESG_POSTFIX, GEN_MESG_POSTFIX])

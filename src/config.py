@@ -10,6 +10,7 @@ import json
 
 from utils.get_resources import get_resource_file
 
+
 @dataclass(frozen=True)
 class Config:
     language: str
@@ -37,10 +38,10 @@ def launch() -> Config:
                 shutil.copyfileobj(f_in, f_out)
     
     data_path = str(get_resource_file("data/"))  + '/'
-    with open(data_path + str(config['General']['language']) + '_vocab.txt', 'r') as voc:
+    with open(data_path + str(config['General']['language']) + '_vocab_original.txt', 'r') as voc:
         vocab = set(voc.read().split('\n'))
 
-    result_file = data_path +  str(config['General']['embeddings']) + ".bin"
+    result_file = data_path + 'glove-twitter-100' + ".bin"
     if not os.path.exists(result_file):
         print("Transforming one substance to another, may take a while...")
         model = KeyedVectors.load_word2vec_format(txt_path, binary=False)
@@ -53,9 +54,9 @@ def launch() -> Config:
 
     vocab = [word for word in vocab if word in model.key_to_index]
 
-    with open(data_path + str(config['General']['language']) + '_mesg.json', 'r') as f:
+    with open(data_path + str(config['General']['language']) + "_mesg_original.json", 'r') as f:
         mesg = json.load(f)
-    
+
     return Config(
         language=config['General']['language'],
         model=model,
