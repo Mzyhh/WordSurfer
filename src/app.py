@@ -4,6 +4,7 @@ from textual.containers import Container
 
 from screens.playground import PlaygroundScreen
 from screens.quiz import QuizScreen
+from screens.tsne import TSNEScreen
 from utils.get_resources import get_resource_file
 from config import launch, Config
 
@@ -24,6 +25,7 @@ class WordSurfer(App):
         yield Container(
             Button(self.config.messages['playground button'], id="playground"),
             Button(self.config.messages['quiz button'], id="quiz"),
+            Button('tsne', id='tsne'),
             Button(self.config.messages['exit button'], id="exit"),
             classes="buttons",
             id="main"
@@ -35,6 +37,8 @@ class WordSurfer(App):
                 self.push_screen(PlaygroundScreen(self.config))
             elif event.button.id == "quiz":
                 self.push_screen(QuizScreen(self.config))
+            elif event.button.id == 'tsne':
+                self.push_screen(TSNEScreen(self.config))
             elif event.button.id == "exit":
                 self.exit()
 

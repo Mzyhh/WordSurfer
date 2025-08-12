@@ -22,7 +22,7 @@ class Config:
     n_options: int
 
 
-def launch() -> Config:
+def launch(save_tsne:bool=True) -> Config:
     """Load embeddings if needed unpack them and do other important stuff."""
     config = ConfigParser()
     config.read(str(get_resource_file('config.ini')))
@@ -55,7 +55,7 @@ def launch() -> Config:
 
     with open(data_path + str(config['General']['language']) + '_mesg.json', 'r') as f:
         mesg = json.load(f)
-    
+
     return Config(
         language=config['General']['language'],
         model=model,
